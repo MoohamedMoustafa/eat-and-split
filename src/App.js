@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from "react";
+import React, { useState } from "react";
 const initialFriends = [
   {
     id: 118836,
@@ -21,12 +21,18 @@ const initialFriends = [
 ];
 
 export default function App() {
+  const [showAddFriendForm, setShowAddFriendForm] = useState(false);
+  function handleAddFriendClick() {
+    setShowAddFriendForm((current) => !current);
+  }
   return (
     <div className="app">
       <div className="sidebar">
         <FriendsList />
-        <FormAddFriend />
-        <Button>Add Friend</Button>
+        {showAddFriendForm && <FormAddFriend />}
+        <Button onClick={handleAddFriendClick}>
+          {showAddFriendForm ? "Close" : "Add Friend"}
+        </Button>
       </div>
       <FormSplitBill />
     </div>
@@ -64,8 +70,12 @@ function Friend({ friend }) {
   );
 }
 
-function Button({ children }) {
-  return <button className="button">{children}</button>;
+function Button({ children, onClick }) {
+  return (
+    <button className="button" onClick={onClick}>
+      {children}
+    </button>
+  );
 }
 
 function FormAddFriend() {
@@ -77,7 +87,7 @@ function FormAddFriend() {
       <label>🌄Image URL</label>
       <input type="text" />
 
-      <Button>Select</Button>
+      <Button>Add</Button>
     </form>
   );
 }
