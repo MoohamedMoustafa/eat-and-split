@@ -40,6 +40,17 @@ export default function App() {
     setShowAddFriendForm(false);
   }
 
+  function handleSplitBill(value) {
+    setFriends((friends) =>
+      friends.map((friend) =>
+        friend.id === selectedFriend.id
+          ? { ...friend, balance: friend.balance + value }
+          : friend
+      )
+    );
+    setSelectedFriend(null);
+  }
+
   useEffect(() => {
     localStorage.setItem("friends", JSON.stringify(friends));
   }, [friends]);
@@ -56,7 +67,12 @@ export default function App() {
           {showAddFriendForm ? "Close" : "Add Friend"}
         </Button>
       </div>
-      {selectedFriend && <FormSplitBill selectedFriend={selectedFriend} />}
+      {selectedFriend && (
+        <FormSplitBill
+          selectedFriend={selectedFriend}
+          onSplitBill={handleSplitBill}
+        />
+      )}
     </div>
   );
 }
@@ -140,13 +156,15 @@ function FormAddFriend({ onAddFriend }) {
   );
 }
 
-function FormSplitBill({ selectedFriend }) {
+function FormSplitBill({ selectedFriend, onSplitBill }) {
   const [bill, setBill] = useState("");
   const [paiedByUser, setPaiedByUser] = useState("");
   const payedByFriend = bill ? bill - paiedByUser : "";
   const [whoIsPaying, setWhoIsPaying] = useState("user");
   function handleSubmit(e) {
     e.preventDefault();
+    if (!bill || !paiedByUser) return;
+    onSplitBill(whoIsPaying === "user" ? payedByFriend : -paiedByUser);
   }
   return (
     <form className="form-split-bill" onSubmit={handleSubmit}>
@@ -163,11 +181,15 @@ function FormSplitBill({ selectedFriend }) {
       <input
         type="text"
         value={paiedByUser}
-        onChange={(e) => setPaiedByUser(Number(e.target.value) > bill ? paiedByUser : e.target.value)}
+        onChange={(e) =>
+          setPaiedByUser(
+            Number(e.target.value) > bill ? paiedByUser : e.target.value
+          )
+        }
       />
 
       <label>😻{selectedFriend.name} expense</label>
-      <input type="text" disabled value={payedByFriend}/>
+      <input type="text" disabled value={payedByFriend} />
 
       <label>🤔Who is paying the bill</label>
       <select
