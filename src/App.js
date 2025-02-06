@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 const initialFriends = [
   {
     id: 118836,
@@ -22,7 +22,11 @@ const initialFriends = [
 
 export default function App() {
   const [showAddFriendForm, setShowAddFriendForm] = useState(false);
-  const [friends, setFriends] = useState(initialFriends);
+  const [friends, setFriends] = useState( () => {
+    const localFriendsList = localStorage.getItem("friends");
+    return localFriendsList ? JSON.parse(localFriendsList) : initialFriends;
+  }
+  );
   function handleAddFriendClick() {
     setShowAddFriendForm((current) => !current);
   }
@@ -30,6 +34,10 @@ export default function App() {
     setFriends((current) => [...current, newFriend]);
     setShowAddFriendForm(false);
   }
+
+  useEffect(() => {
+    localStorage.setItem("friends", JSON.stringify(friends));
+  }, [friends]);
   return (
     <div className="app">
       <div className="sidebar">
