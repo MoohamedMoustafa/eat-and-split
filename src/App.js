@@ -69,4 +69,16 @@ function Button({children}) {
   return <button className="button">{children}</button>
 }
 
+function FormAddFriend() {
+  return(
+    <form className="from-add-friend">
+      <label>🧩Friend Name</label>
+      <input type="text" />
 
+      <label>🌄Image URL</label>
+      <input type="text" />
+
+      <Button>Select</Button>
+    </form>
+  )
+}
