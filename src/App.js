@@ -60,7 +60,13 @@ function Friend({ friend }) {
           You and {friend.name} are settled up
         </p>
       )}
-      <button className="button">Select</button>
+      <Button>Select</Button>
     </li>
   );
 }
+
+function Button({children}) {
+  return <button className="button">{children}</button>
+}
+
+
